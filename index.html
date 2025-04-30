@@ -1,257 +1,247 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multimodal Genre Classification</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
-            color: #333;
-            line-height: 1.6;
-        }
-        header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 1rem 0;
-            text-align: center;
-        }
-        main {
-            padding: 2rem;
-            max-width: 1100px;
-            margin: auto;
-        }
-        section {
-            margin-bottom: 3rem;
-        }
-        h1, h2, h3 {
-            color: #333;
-        }
-        .image-gallery img {
-            width: 100%;
-            max-width: 800px;
-            margin-bottom: 2rem;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
-        }
-        .genre-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 2rem;
-        }
-        .genre-list span {
-            background: #e0f7e9;
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-        }
-        footer {
-            text-align: center;
-            padding: 1rem;
-            margin-top: 3rem;
-            background-color: #4CAF50;
-            color: white;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Multimodal Genre Classification</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+    }
+    header {
+      background-color: #4CAF50;
+      color: white;
+      padding: 1rem 0;
+      text-align: center;
+    }
+    main {
+      padding: 2rem;
+      max-width: 1100px;
+      margin: auto;
+    }
+    section {
+      margin-bottom: 3rem;
+    }
+    h1, h2, h3 {
+      color: #333;
+    }
+    .image-gallery img {
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 2rem;
+      border-radius: 10px;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+    }
+    .genre-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 2rem;
+    }
+    .genre-list span {
+      background: #e0f7e9;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      margin-top: 3rem;
+      background-color: #4CAF50;
+      color: white;
+    }
+  </style>
 </head>
 
 <body>
-    <header>
-        <h1>Multimodal Genre Classification</h1>
-        <p>Deep Learning Approach on IMDb Movie Dataset</p>
-    </header>
+  <header>
+    <h1>Multimodal Genre Classification</h1>
+    <p>Deep Learning Approach on IMDb Movie Dataset</p>
+  </header>
 
-    <main>
+  <main>
+    <section>
+      <h2>About the Dataset</h2>
+      <p>We curated a cleaned IMDb dataset of <strong>40,000 movies</strong>, containing:</p>
+      <ul>
+        <li>Release Date</li>
+        <li>Title</li>
+        <li>Overview</li>
+        <li>Popularity</li>
+        <li>Vote Count and Average</li>
+        <li>Original Language</li>
+        <li>Genres</li>
+        <li>Poster URL</li>
+      </ul>
+      <p>
+        Originally sourced from 50K movies, we carefully removed incorrect labels and missing posters using web scraping (IMDb Cinemagoer API).
+      </p>
 
-        <section>
-            <h2>About the Dataset</h2>
-            <p>
-                We curated a cleaned IMDb dataset of <strong>40,000 movies</strong>, containing:
-            </p>
-            <ul>
-                <li>Release Date</li>
-                <li>Title</li>
-                <li>Overview</li>
-                <li>Popularity</li>
-                <li>Vote Count and Average</li>
-                <li>Original Language</li>
-                <li>Genres</li>
-                <li>Poster URL</li>
-            </ul>
-            <p>
-                Originally sourced from 50K movies, we carefully removed incorrect labels and missing posters using web scraping (IMDb Cinemagoer API).
-            </p>
+      <h3>Genre Distribution Overview</h3>
+      <div class="genre-list">
+        <span>Action (5584)</span>
+        <span>Adventure (2891)</span>
+        <span>Animation (1599)</span>
+        <span>Comedy (11309)</span>
+        <span>Crime (3769)</span>
+        <span>Documentary (3641)</span>
+        <span>Drama (18449)</span>
+        <span>Family (2305)</span>
+        <span>Fantasy (1866)</span>
+        <span>Foreign (1501)</span>
+        <span>History (1286)</span>
+        <span>Horror (3707)</span>
+        <span>Music (1426)</span>
+        <span>Mystery (2156)</span>
+        <span>Romance (6159)</span>
+        <span>Science Fiction (2455)</span>
+        <span>TV Movie (679)</span>
+        <span>Thriller (6677)</span>
+        <span>War (1183)</span>
+        <span>Western (905)</span>
+      </div>
 
-            <h3>Genre Distribution Overview</h3>
-            <div class="genre-list">
-                <span>Action (5584)</span>
-                <span>Adventure (2891)</span>
-                <span>Animation (1599)</span>
-                <span>Comedy (11309)</span>
-                <span>Crime (3769)</span>
-                <span>Documentary (3641)</span>
-                <span>Drama (18449)</span>
-                <span>Family (2305)</span>
-                <span>Fantasy (1866)</span>
-                <span>Foreign (1501)</span>
-                <span>History (1286)</span>
-                <span>Horror (3707)</span>
-                <span>Music (1426)</span>
-                <span>Mystery (2156)</span>
-                <span>Romance (6159)</span>
-                <span>Science Fiction (2455)</span>
-                <span>TV Movie (679)</span>
-                <span>Thriller (6677)</span>
-                <span>War (1183)</span>
-                <span>Western (905)</span>
-            </div>
+      <h3>Combined Dataset Genre Occurrences</h3>
+      <div class="image-gallery">
+        <img src="CombinedGenreDistribution.png" alt="Combined Genre Distribution">
+      </div>
 
-            <h3>Combined Dataset Genre Occurrences</h3>
-            <div class="image-gallery">
-                <img src="CombinedGenreDistribution.png" alt="Combined Genre Distribution">
-            </div>
+      <h3>Gaussian-like Fit on Genre Distribution</h3>
+      <div class="image-gallery">
+        <img src="GaussianFit.png" alt="Gaussian Distribution Fit">
+      </div>
 
-            <h3>Gaussian-like Fit on Genre Distribution</h3>
-            <div class="image-gallery">
-                <img src="GaussianFit.png" alt="Gaussian Distribution Fit">
-            </div>
+      <h3>Test Set Genre Distribution</h3>
+      <div class="image-gallery">
+        <img src="TestGenreDistribution.png" alt="Genre Distribution in Test Set">
+      </div>
+    </section>
 
-            <h3>Test Set Genre Distribution</h3>
-            <div class="image-gallery">
-                <img src="TestGenreDistribution.png" alt="Genre Distribution in Test Set">
-            </div>
-        </section>
+    <section>
+      <h2>LSTM-based Model</h2>
+      <p>We built a strong multi-label classification model using a customized LSTM architecture:</p>
+      <ul>
+        <li><strong>Embedding Layer</strong> initialized from scratch (~30K vocabulary size)</li>
+        <li><strong>3-layer Bidirectional LSTM</strong> with 256 hidden units and 0.5 dropout</li>
+        <li><strong>Fully connected layer</strong> for 20 genre probabilities</li>
+      </ul>
 
-        <section>
-            <h2>LSTM-based Model</h2>
-            <p>
-                We built a strong multi-label classification model using a customized LSTM architecture:
-            </p>
-            <ul>
-                <li><strong>Embedding Layer</strong> initialized from scratch (~30K vocabulary size)</li>
-                <li><strong>3-layer Bidirectional LSTM</strong> with 256 hidden units and 0.5 dropout</li>
-                <li><strong>Fully connected layer</strong> for 20 genre probabilities</li>
-            </ul>
+      <h3>Training Details</h3>
+      <ul>
+        <li>Loss Function: <strong>BCEWithLogitsLoss</strong> (with dynamic class weights)</li>
+        <li>Optimizer: <strong>Adam</strong> with learning rate 0.001</li>
+        <li>Early stopping based on Macro F1 Score</li>
+      </ul>
 
-            <h3>Training Details</h3>
-            <ul>
-                <li>Loss Function: <strong>Binary Cross-Entropy with Logits Loss (BCEWithLogitsLoss)</strong> (with dynamic class weights)</li>
-                <li>Optimizer: <strong>Adam</strong> with learning rate 0.001</li>
-                <li>Early stopping based on Macro F1 Score</li>
-            </ul>
+      <h3>Handling Rare Genres</h3>
+      <p>
+        Rare genres like <strong>Western</strong> and <strong>TV Movie</strong> were handled by adjusting loss contribution using <strong>class weighting</strong> inversely proportional to genre frequency.
+      </p>
+    </section>
 
-            <h3>Handling Rare Genres</h3>
-            <p>
-                Rare genres like <strong>Western</strong> and <strong>TV Movie</strong> were handled by adjusting loss contribution using <strong>class weighting</strong> inversely proportional to genre frequency.
-            </p>
-        </section>
+    <section>
+      <h2>LSTM Training and Evaluation</h2>
+      <div class="image-gallery">
+        <img src="LSTMTrainingLossAccuracy.png" alt="LSTM Training and Validation Loss/Accuracy">
+        <img src="LSTMMacroF1.png" alt="LSTM Training and Validation Macro F1">
+        <img src="LSTMConfusionMatrix.png" alt="LSTM Confusion Matrix">
+      </div>
+      <p>Final Macro F1 Score: <strong>41.8%</strong> on test set.</p>
+    </section>
 
-        <section>
-            <h2>LSTM Training and Evaluation</h2>
-            <div class="image-gallery">
-                <img src="LSTMTrainingLossAccuracy.png" alt="LSTM Training and Validation Loss/Accuracy">
-                <img src="LSTMMacroF1.png" alt="LSTM Training and Validation Macro F1">
-                <img src="LSTMConfusionMatrix.png" alt="LSTM Confusion Matrix">
-            </div>
-            <p>
-                Final Macro F1 Score: <strong>41.8%</strong> on test set.
-            </p>
-        </section>
+    <section>
+      <h2>GPT-2 based Model</h2>
+      <p>We fine-tuned <strong>GPT-2</strong> with custom techniques:</p>
+      <ul>
+        <li>Oversampling rare genres before training</li>
+        <li>Focal Loss (α=0.25, γ=2) to focus on hard examples</li>
+        <li>Optimizer: <strong>AdamW</strong> with learning rate 2e-5</li>
+        <li>Dynamic per-genre thresholds tuned from validation curves</li>
+        <li>Freezing first 6 layers of GPT-2</li>
+      </ul>
+    </section>
 
-        <section>
-            <h2>GPT-2 based Model</h2>
-            <p>
-                We fine-tuned <strong>GPT-2</strong> with custom techniques:
-            </p>
-            <ul>
-                <li>Oversampling rare genres before training</li>
-                <li>Focal Loss (α=0.25, γ=2) to focus on hard examples</li>
-                <li>Optimizer: <strong>AdamW</strong> with learning rate 2e-5</li>
-                <li>Dynamic per-genre thresholds tuned from validation curves</li>
-                <li>Freezing first 6 layers of GPT-2</li>
-            </ul>
-        </section>
+    <section>
+      <h2>GPT-2 Training and Evaluation</h2>
+      <div class="image-gallery">
+        <img src="GPTTrainingLossAccuracy.png" alt="GPT-2 Training Loss/Accuracy">
+        <img src="GPTMacroF1.png" alt="GPT-2 Macro F1 Score">
+        <img src="GPTConfusionMatrix.png" alt="GPT-2 Confusion Matrix">
+      </div>
+      <p>Final Macro F1 Score: <strong>65.2%</strong> on test set.</p>
+    </section>
 
-        <section>
-            <h2>GPT-2 Training and Evaluation</h2>
-            <div class="image-gallery">
-                <img src="GPTTrainingLossAccuracy.png" alt="GPT-2 Training Loss/Accuracy">
-                <img src="GPTMacroF1.png" alt="GPT-2 Macro F1 Score">
-                <img src="GPTConfusionMatrix.png" alt="GPT-2 Confusion Matrix">
-            </div>
-            <p>
-                Final Macro F1 Score: <strong>65.2%</strong> on test set.
-            </p>
-        </section>
+    <section>
+      <h2>BERT-based Model</h2>
+      <p>Fine-tuned <strong>BERT-base</strong> with:</p>
+      <ul>
+        <li>Loss Function: <strong>Focal Loss</strong> (α=0.25, γ=2)</li>
+        <li>Optimizer: <strong>AdamW</strong> with learning rate 2e-5</li>
+        <li>Custom threshold tuning per genre after validation</li>
+        <li>Oversampling of underrepresented genres</li>
+        <li>Freezing first 6 layers for faster adaptation</li>
+      </ul>
+    </section>
 
-        <section>
-            <h2>BERT-based Model</h2>
-            <p>
-                Fine-tuned <strong>BERT-base</strong> with:
-            </p>
-            <ul>
-                <li>Loss Function: <strong>Focal Loss</strong> (α=0.25, γ=2)</li>
-                <li>Optimizer: <strong>AdamW</strong> with learning rate 2e-5</li>
-                <li>Custom threshold tuning per genre after validation</li>
-                <li>Oversampling of underrepresented genres</li>
-                <li>Freezing first 6 layers for faster adaptation</li>
-            </ul>
-        </section>
+    <section>
+      <h2>BERT Training and Evaluation</h2>
+      <div class="image-gallery">
+        <img src="BERTTrainingLossAccuracy.png" alt="BERT Training Loss/Accuracy">
+        <img src="BERTMacroF1.png" alt="BERT Macro F1 Score">
+        <img src="BERTConfusionMatrix.png" alt="BERT Confusion Matrix">
+      </div>
+      <p>Final Macro F1 Score: <strong>80.6%</strong> on test set.</p>
+    </section>
 
-        <section>
-            <h2>BERT Training and Evaluation</h2>
-            <div class="image-gallery">
-                <img src="BERTTrainingLossAccuracy.png" alt="BERT Training Loss/Accuracy">
-                <img src="BERTMacroF1.png" alt="BERT Macro F1 Score">
-                <img src="BERTConfusionMatrix.png" alt="BERT Confusion Matrix">
-            </div>
-            <p>
-                Final Macro F1 Score: <strong>80.6%</strong> on test set.
-            </p>
-        </section>
+    <section>
+      <h2>Multimodal (ResNet50 + BERT) Model</h2>
+      <p>Developed a multimodal model combining <strong>BERT text embeddings</strong> and <strong>ResNet50 image features</strong>:</p>
+      <ul>
+        <li>Loss Function: <strong>BCEWithLogitsLoss</strong> with positive class weighting</li>
+        <li>Optimizer: <strong>AdamW</strong> with learning rate 1e-4</li>
+        <li>Text and Image processed separately and fused</li>
+        <li>Threshold tuning for each genre individually</li>
+      </ul>
+    </section>
 
-        <section>
-            <h2>Multimodal (ResNet50 + BERT) Model</h2>
-            <p>
-                Developed a multimodal model combining <strong>BERT text embeddings</strong> and <strong>ResNet50 image features</strong>:
-            </p>
-            <ul>
-                <li>Loss Function: <strong>Binary Cross-Entropy with Logits Loss (BCEWithLogitsLoss)</strong> with positive class weighting</li>
-                <li>Optimizer: <strong>AdamW</strong> with learning rate 1e-4</li>
-                <li>Text and Image processed separately and fused</li>
-                <li>Threshold tuning for each genre individually</li>
-            </ul>
-        </section>
+    <section>
+      <h2>Multimodal Training and Evaluation</h2>
+      <div class="image-gallery">
+        <img src="multimodeltraining.png" alt="Multimodal Loss and Accuracy Curves">
+        <img src="multimodelconfusion.png" alt="Multimodal Confusion Matrices">
+      </div>
+      <p>Final Macro F1 Score: <strong>51%</strong> on test set (sample-wise).</p>
+    </section>
 
-        <section>
-            <h2>Multimodal Training and Evaluation</h2>
-            <div class="image-gallery">
-                <img src="multimodeltraining.png" alt="Multimodal Loss and Accuracy Curves">
-                <img src="multimodelconfusion.png" alt="Multimodal Confusion Matrices">
-            </div>
-            <p>
-                Final Macro F1 Score: <strong>51%</strong> on test set (sample-wise).
-            </p>
-        </section>
+    <section>
+      <h2>Example Prediction</h2>
+      <p>
+        Given the movie overview: 
+        <em>"A young boy discovers a magical world filled with dragons and knights, embarking on an epic quest to save his family."</em><br><br>
+        The models consistently predicted: <strong>Adventure, Animation, Family, Fantasy</strong>.
+      </p>
+    </section>
 
-        <section>
-            <h2>Example Prediction</h2>
-            <p>
-                Given the movie overview: 
-                <em>"A young boy discovers a magical world filled with dragons and knights, embarking on an epic quest to save his family."</em><br><br>
-                The models consistently predicted: <strong>Adventure, Animation, Family, Fantasy</strong>.
-            </p>
-        </section>
+    <section>
+      <h2>Bonus: Certifications</h2>
+      <p>These certifications represent ~900 hours of foundational Python programming and mathematical computing.</p>
+      <div class="image-gallery">
+        <img src="scientific computationwithpython.png" alt="Scientific Computing with Python Certificate">
+        <img src="collegealegebrawithpython.png" alt="College Algebra with Python Certificate">
+        <img src="dataanalysiswithpython.png" alt="Data Analysis with Python Certificate">
+      </div>
+    </section>
+  </main>
 
-    </main>
-
-    <footer>
-        <p>Created by [Your Name] | Multimodal Genre Classification</p>
-    </footer>
+  <footer>
+    <p>Created by [Your Name] | Multimodal Genre Classification</p>
+  </footer>
 </body>
 </html>

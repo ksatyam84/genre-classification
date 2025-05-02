@@ -57,6 +57,35 @@
       background-color: #4CAF50;
       color: white;
     }
+    .code-snippet {
+      background: #f4f4f4;
+      padding: 1rem;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+    pre {
+      margin: 0;
+    }
+    .f1-table table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    .f1-table th, .f1-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    .f1-table th {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .f1-table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    .f1-table tr:hover {
+      background-color: #ddd;
+    }
   </style>
 </head>
 
@@ -126,23 +155,36 @@
 
     <section>
       <h2>LSTM-based Model</h2>
-      <p>We built a strong multi-label classification model using a customized LSTM architecture:</p>
+      <p>We built a robust multi-label classification model using a customized LSTM architecture:</p>
       <ul>
         <li><strong>Embedding Layer</strong> initialized from scratch (~30K vocabulary size)</li>
         <li><strong>3-layer Bidirectional LSTM</strong> with 256 hidden units and 0.5 dropout</li>
         <li><strong>Fully connected layer</strong> for 20 genre probabilities</li>
+        <li><strong>Dynamic max sequence length</strong> set to 90th percentile of overview lengths</li>
+        <li><strong>Text preprocessing</strong> with NLTK (tokenization, stopword removal, lemmatization)</li>
       </ul>
 
       <h3>Training Details</h3>
       <ul>
-        <li>Loss Function: <strong>BCEWithLogitsLoss</strong> (with dynamic class weights)</li>
+        <li>Loss Function: <strong>BCEWithLogitsLoss</strong> with dynamic class weights inversely proportional to genre frequency</li>
         <li>Optimizer: <strong>Adam</strong> with learning rate 0.001</li>
-        <li>Early stopping based on Macro F1 Score</li>
+        <li>Early stopping based on Macro F1 Score with patience of 5 epochs</li>
+        <li>Batch size: 32</li>
+        <li>Per-genre threshold tuning using precision-recall curves on validation set</li>
       </ul>
 
       <h3>Handling Rare Genres</h3>
       <p>
-        Rare genres like <strong>Western</strong> and <strong>TV Movie</strong> were handled by adjusting loss contribution using <strong>class weighting</strong> inversely proportional to genre frequency.
+        Rare genres like <strong>Western</strong> and <strong>TV Movie</strong> were addressed by:
+      </p>
+      <ul>
+        <li>Adjusting loss contribution using <strong>class weighting</strong> inversely proportional to genre frequency</li>
+        <li>Optimizing per-genre thresholds to maximize F1 scores</li>
+      </ul>
+
+      <h3>Performance Insights</h3>
+      <p>
+        The LSTM model achieved a Macro F1 Score of <strong>41.8%</strong> on the test set, with stronger performance on frequent genres like Drama (0.676) and Documentary (0.643), but struggled with rare genres like Foreign (0.084) and TV Movie (0.057) due to limited samples.
       </p>
     </section>
 
@@ -158,14 +200,40 @@
 
     <section>
       <h2>GPT-2 based Model</h2>
-      <p>We fine-tuned <strong>GPT-2</strong> with custom techniques:</p>
+      <p>We fine-tuned <strong>GPT-2</strong> with the following enhancements:</p>
       <ul>
-        <li>Oversampling rare genres before training</li>
-        <li>Focal Loss (α=0.25, γ=2) to focus on hard examples</li>
+        <li><strong>Oversampling</strong> rare genres to balance training data to 1.5x median genre frequency</li>
+        <li><strong>Focal Loss</strong> (α=0.25, γ=2) to focus on hard examples</li>
         <li>Optimizer: <strong>AdamW</strong> with learning rate 2e-5</li>
-        <li>Dynamic per-genre thresholds tuned from validation curves</li>
-        <li>Freezing first 6 layers of GPT-2</li>
+        <li><strong>Dynamic per-genre thresholds</strong> tuned from validation curves with bias toward precision for rare genres</li>
+        <li><strong>Layer freezing</strong>: First 6 layers of GPT-2 frozen for faster adaptation</li>
+        <li><strong>Tokenizer</strong>: GPT-2's pre-trained tokenizer with max length of 128 tokens</li>
+        <li><strong>Dropout</strong>: Implicit in GPT-2 architecture</li>
       </ul>
+
+      <h3>Training Details</h3>
+      <ul>
+        <li>Batch size: 16 (due to memory constraints)</li>
+        <li>Epochs: Up to 5 with early stopping (patience of 3)</li>
+        <li>Learning rate scheduler: Linear warmup over 500 steps</li>
+        <li>Gradient clipping: Max norm of 1.0 to prevent exploding gradients</li>
+        <li>Oversampling strategy: Rare genres oversampled to balance training data</li>
+      </ul>
+
+      <h3>Handling Rare Genres</h3>
+      <p>
+        Rare genres like <strong>Western</strong> and <strong>TV Movie</strong> were addressed by:
+      </p>
+      <ul>
+        <li><strong>Oversampling</strong> to increase representation in training data</li>
+        <li><strong>Focal Loss</strong> to focus on hard-to-classify examples</li>
+        <li><strong>Threshold tuning</strong> biased toward higher precision for genres with fewer than 500 samples</li>
+      </ul>
+
+      <h3>Performance Insights</h3>
+      <p>
+        The GPT-2 model achieved a Macro F1 Score of <strong>65.2%</strong>, significantly improving over LSTM, especially for rare genres like Western (0.851) and War (0.781), due to focal loss and oversampling. However, it still faced challenges with Foreign (0.333) due to ambiguous textual cues.
+      </p>
     </section>
 
     <section>
@@ -180,14 +248,40 @@
 
     <section>
       <h2>BERT-based Model</h2>
-      <p>Fine-tuned <strong>BERT-base</strong> with:</p>
+      <p>Fine-tuned <strong>BERT-base-uncased</strong> with the following configuration:</p>
       <ul>
-        <li>Loss Function: <strong>Focal Loss</strong> (α=0.25, γ=2)</li>
+        <li><strong>Focal Loss</strong> (α=0.25, γ=2) to address class imbalance</li>
         <li>Optimizer: <strong>AdamW</strong> with learning rate 2e-5</li>
-        <li>Custom threshold tuning per genre after validation</li>
-        <li>Oversampling of underrepresented genres</li>
-        <li>Freezing first 6 layers for faster adaptation</li>
+        <li><strong>Custom threshold tuning</strong> per genre after validation, with bias toward precision for rare genres</li>
+        <li><strong>Oversampling</strong> of underrepresented genres to 1.5x median genre frequency</li>
+        <li><strong>Layer freezing</strong>: First 6 layers frozen for efficient fine-tuning</li>
+        <li><strong>Tokenizer</strong>: BERT's WordPiece tokenizer with max length of 128 tokens</li>
+        <li><strong>Dropout</strong>: 0.1 in the classification head</li>
       </ul>
+
+      <h3>Training Details</h3>
+      <ul>
+        <li>Batch size: 16</li>
+        <li>Epochs: Up to 5 with early stopping (patience of 3)</li>
+        <li>Learning rate scheduler: Linear decay after warmup (500 steps)</li>
+        <li>Gradient clipping: Max norm of 1.0</li>
+        <li>Oversampling strategy: Rare genres oversampled to balance training data</li>
+      </ul>
+
+      <h3>Handling Rare Genres</h3>
+      <p>
+        Rare genres like <strong>Western</strong> and <strong>TV Movie</strong> were addressed by:
+      </p>
+      <ul>
+        <li><strong>Oversampling</strong> to increase representation in training data</li>
+        <li><strong>Focal Loss</strong> to focus on hard-to-classify examples</li>
+        <li><strong>Threshold tuning</strong> biased toward higher precision for genres with fewer than 500 samples</li>
+      </ul>
+
+      <h3>Performance Insights</h3>
+      <p>
+        The BERT model achieved a Macro F1 Score of <strong>80.6%</strong>, excelling across most genres, including rare ones like Western (0.959) and TV Movie (0.923). Its transformer architecture and oversampling strategy improved performance on imbalanced classes, though Foreign (0.725) remained challenging due to ambiguous textual cues.
+      </p>
     </section>
 
     <section>
@@ -204,11 +298,37 @@
       <h2>Multimodal (ResNet50 + BERT) Model</h2>
       <p>Developed a multimodal model combining <strong>BERT text embeddings</strong> and <strong>ResNet50 image features</strong>:</p>
       <ul>
+        <li><strong>BERT Branch</strong>: Fine-tuned BERT-base-uncased for text embeddings (768 dimensions)</li>
+        <li><strong>ResNet50 Branch</strong>: Pre-trained ResNet50 (ImageNet) for poster image features (2048 dimensions)</li>
+        <li><strong>Fusion</strong>: Concatenated features fed into a fully connected layer with 512 units, followed by a classification head</li>
         <li>Loss Function: <strong>BCEWithLogitsLoss</strong> with positive class weighting</li>
         <li>Optimizer: <strong>AdamW</strong> with learning rate 1e-4</li>
-        <li>Text and Image processed separately and fused</li>
-        <li>Threshold tuning for each genre individually</li>
+        <li><strong>Threshold tuning</strong>: Per-genre thresholds optimized on validation set</li>
+        <li><strong>Image preprocessing</strong>: Resized posters to 224x224, normalized with ImageNet stats</li>
+        <li><strong>Dropout</strong>: 0.5 in the classifier layers</li>
       </ul>
+
+      <h3>Training Details</h3>
+      <ul>
+        <li>Batch size: 8 (due to memory constraints with images)</li>
+        <li>Epochs: Up to 6 with early stopping</li>
+        <li>Learning rate: 1e-4</li>
+        <li>Positive class weighting to handle class imbalance</li>
+      </ul>
+
+      <h3>Handling Rare Genres</h3>
+      <p>
+        Rare genres like <strong>Western</strong> and <strong>TV Movie</strong> were addressed by:
+      </p>
+      <ul>
+        <li><strong>Positive class weighting</strong> in the loss function to emphasize rare genres</li>
+        <li><strong>Threshold tuning</strong> to optimize F1 scores for each genre</li>
+      </ul>
+
+      <h3>Performance Insights</h3>
+      <p>
+        The multimodal model achieved a Macro F1 Score of <strong>51%</strong>, underperforming BERT due to the complexity of integrating image and text modalities. It showed strength in visually distinct genres like Documentary (0.800) but struggled with genres like Foreign (0.201) where posters provided less discriminative information.
+      </p>
     </section>
 
     <section>
@@ -218,6 +338,50 @@
         <img src="multimodelconfusion.png" alt="Multimodal Confusion Matrices">
       </div>
       <p>Final Macro F1 Score: <strong>51%</strong> on test set (sample-wise).</p>
+    </section>
+
+    <section>
+      <h2>Per-Genre F1 Scores Comparison</h2>
+      <div class="f1-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Genre</th>
+              <th>LSTM</th>
+              <th>GPT-2</th>
+              <th>BERT</th>
+              <th>Multimodal (ResNet50+BERT)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Action</td><td>0.466</td><td>0.645</td><td>0.796</td><td>0.564</td></tr>
+            <tr><td>Adventure</td><td>0.329</td><td>0.583</td><td>0.796</td><td>0.430</td></tr>
+            <tr><td>Animation</td><td>0.427</td><td>0.760</td><td>0.895</td><td>0.541</td></tr>
+            <tr><td>Comedy</td><td>0.521</td><td>0.661</td><td>0.756</td><td>0.659</td></tr>
+            <tr><td>Crime</td><td>0.472</td><td>0.549</td><td>0.598</td><td>0.509</td></tr>
+            <tr><td>Documentary</td><td>0.643</td><td>0.821</td><td>0.855</td><td>0.800</td></tr>
+            <tr><td>Drama</td><td>0.676</td><td>0.742</td><td>0.815</td><td>0.741</td></tr>
+            <tr><td>Family</td><td>0.375</td><td>0.658</td><td>0.847</td><td>0.497</td></tr>
+            <tr><td>Fantasy</td><td>0.311</td><td>0.581</td><td>0.791</td><td>0.413</td></tr>
+            <tr><td>Foreign</td><td>0.084</td><td>0.333</td><td>0.725</td><td>0.201</td></tr>
+            <tr><td>History</td><td>0.246</td><td>0.681</td><td>0.855</td><td>0.378</td></tr>
+            <tr><td>Horror</td><td>0.522</td><td>0.650</td><td>0.781</td><td>0.618</td></tr>
+            <tr><td>Music</td><td>0.408</td><td>0.702</td><td>0.863</td><td>0.493</td></tr>
+            <tr><td>Mystery</td><td>0.301</td><td>0.515</td><td>0.704</td><td>0.357</td></tr>
+            <tr><td>Romance</td><td>0.437</td><td>0.561</td><td>0.696</td><td>0.520</td></tr>
+            <tr><td>Science Fiction</td><td>0.506</td><td>0.740</td><td>0.866</td><td>0.586</td></tr>
+            <tr><td>TV Movie</td><td>0.057</td><td>0.621</td><td>0.923</td><td>0.205</td></tr>
+            <tr><td>Thriller</td><td>0.501</td><td>0.605</td><td>0.678</td><td>0.559</td></tr>
+            <tr><td>War</td><td>0.481</td><td>0.781</td><td>0.921</td><td>0.552</td></tr>
+            <tr><td>Western</td><td>0.598</td><td>0.851</td><td>0.959</td><td>0.613</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>GitHub Repository</h2>
+      <p>Explore the full codebase and resources on <a href="https://github.com/ksatyam84/genre-classification" target="_blank">GitHub: ksatyam84/genre-classification</a></p>
     </section>
 
     <section>
@@ -240,7 +404,7 @@
   </main>
 
   <footer>
-    <p>Created by [Your Name] | Multimodal Genre Classification</p>
+    <p>Created by [Kumar Satyam] | Multimodal Genre Classification</p>
   </footer>
 </body>
 </html>
